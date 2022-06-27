@@ -45,7 +45,11 @@ import infoParser from './diagrams/info/parser/info';
 import pieParser from './diagrams/pie/parser/pie';
 import pieDb from './diagrams/pie/pieDb';
 import pieRenderer from './diagrams/pie/pieRenderer';
-import addSVGAccessibilityFields from './diagrams/pie/pieRenderer';
+// import addSVGAccessibilityFields from './diagrams/pie/pieRenderer';
+import treeParser from './diagrams/tree/parser/tree';
+import treeDb from './diagrams/tree/treeDb';
+import treeRenderer from './diagrams/tree/treeRenderer';
+// import addSVGAccessibilityFields from './diagrams/tree/treeRenderer';
 import requirementParser from './diagrams/requirement/parser/requirementDiagram';
 import requirementDb from './diagrams/requirement/requirementDb';
 import requirementRenderer from './diagrams/requirement/requirementRenderer';
@@ -141,6 +145,11 @@ function parse(text) {
         log.debug('pie');
         parser = pieParser;
         parser.parser.yy = pieDb;
+        break;
+      case 'tree':
+        log.debug('tree');
+        parser = treeParser;
+        parser.parser.yy = treeDb;
         break;
       case 'er':
         log.debug('er');
@@ -524,6 +533,11 @@ const render = function (id, _txt, cb, container) {
         //pieRenderer.setConf(cnf.pie);
         pieRenderer.draw(txt, id, pkg.version);
         break;
+      case 'tree':
+        //cnf.class.arrowMarkerAbsolute = cnf.arrowMarkerAbsolute;
+        //treeRenderer.setConf(cnf.tree);
+        treeRenderer.draw(txt, id, pkg.version);
+        break;
       case 'er':
         erRenderer.setConf(cnf.er);
         erRenderer.draw(txt, id, pkg.version);
@@ -704,6 +718,7 @@ function updateRendererConfigs(conf) {
   stateRendererV2.setConf(conf.state);
   infoRenderer.setConf(conf.class);
   // pieRenderer.setConf(conf.class);
+  // treeRenderer.setConf(conf.class);
   erRenderer.setConf(conf.er);
   journeyRenderer.setConf(conf.journey);
   requirementRenderer.setConf(conf.requirement);

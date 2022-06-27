@@ -226,6 +226,10 @@ export const detectType = function (text, cnf) {
   if (text.match(/^\s*pie/)) {
     return 'pie';
   }
+  
+  if (text.match(/^\s*tree/)) {
+    return 'tree';
+  }
 
   if (text.match(/^\s*erDiagram/)) {
     return 'er';

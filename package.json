@@ -39,7 +39,7 @@
     "test:watch": "jest --watch src",
     "prepublishOnly": "yarn build && yarn test",
     "prepare": "husky install && yarn build",
-    "pre-commit": "lint-staged"
+    "pre-commit": "echo commiting"
   },
   "repository": {
     "type": "git",

@@ -1018,6 +1018,26 @@ const config = {
     useMaxWidth: true,
   },
 
+  /** The object containing configurations specific for tree diagrams */
+  tree: {
+    useWidth: undefined,
+
+    /**
+     * | Parameter   | Description | Type    | Required | Values      |
+     * | ----------- | ----------- | ------- | -------- | ----------- |
+     * | useMaxWidth | See Notes   | boolean | Required | true, false |
+     *
+     * **Notes:**
+     *
+     * When this flag is set to true, the diagram width is locked to 100% and scaled based on
+     * available space. If set to false, the diagram reserves its absolute width.
+     *
+     * Default value: true
+     */
+    useMaxWidth: true,
+  },
+
+
   /** The object containing configurations specific for req diagrams */
   requirement: {
     useWidth: undefined,

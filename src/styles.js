@@ -5,6 +5,7 @@ import gantt from './diagrams/gantt/styles';
 import gitGraph from './diagrams/git/styles';
 import info from './diagrams/info/styles';
 import pie from './diagrams/pie/styles';
+import tree from './diagrams/tree/styles';
 import requirement from './diagrams/requirement/styles';
 import sequence from './diagrams/sequence/styles';
 import stateDiagram from './diagrams/state/styles';
@@ -24,6 +25,7 @@ const themes = {
   gitGraph,
   info,
   pie,
+  tree,
   er,
   journey,
   requirement,

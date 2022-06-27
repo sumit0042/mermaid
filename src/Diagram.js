@@ -24,6 +24,9 @@ import infoParser from './diagrams/info/parser/info';
 import pieParser from './diagrams/pie/parser/pie';
 import pieDb from './diagrams/pie/pieDb';
 import pieRenderer from './diagrams/pie/pieRenderer';
+import treeParser from './diagrams/tree/parser/tree';
+import treeDb from './diagrams/tree/treeDb';
+import treeRenderer from './diagrams/tree/treeRenderer';
 import requirementParser from './diagrams/requirement/parser/requirementDiagram';
 import requirementDb from './diagrams/requirement/requirementDb';
 import requirementRenderer from './diagrams/requirement/requirementRenderer';
@@ -128,6 +131,13 @@ class Diagram {
         this.parser.parser.yy = pieDb;
         this.db = pieDb;
         this.renderer = pieRenderer;
+        break;
+      case 'tree':
+        log.debug('tree');
+        this.parser = treeParser;
+        this.parser.parser.yy = treeDb;
+        this.db = treeDb;
+        this.renderer = treeRenderer;
         break;
       case 'er':
         log.debug('er');
