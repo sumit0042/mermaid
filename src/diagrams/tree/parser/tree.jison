@@ -39,9 +39,11 @@ accDescr\s*"{"\s*                                { this.begin("acc_descr_multili
 ["]                                                             { this.begin("string"); }
 <string>["]                                                     { this.popState(); }
 <string>[^"]*                                                   { return "txt"; }
-"tree"		                                                        return 'TREE';
+"tree"		                                                      return 'TREE';
 "showData"                                                      return 'showData';
-":"[\s]*[\d]+(?:\.[\d]+)?                                       return "value";
+\w+\s*                                                          { return "id"}
+"--"\s">"                                                       return 'ARROW';
+":"                                                             return 'SEMICOLON'
 <<EOF>>                                                         return 'EOF';
 
 /lex
@@ -68,7 +70,8 @@ line
 
 statement
   :
-	| txt value          { yy.addSection($1,yy.cleanupValue($2)); }
+	| id SEMICOLON txt          { yy.addSection($1, $3); }
+	| id ARROW id SEMICOLON txt          { yy.addChildSection($1, $3, $5); }
 	| title title_value  { $$=$2.trim();yy.setDiagramTitle($$); }
   | acc_title acc_title_value  { $$=$2.trim();yy.setAccTitle($$); }
   | acc_descr acc_descr_value  { $$=$2.trim();yy.setAccDescription($$); }

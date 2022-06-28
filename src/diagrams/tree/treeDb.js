@@ -13,6 +13,7 @@ import {
 } from '../../commonDb';
 
 let sections = {};
+let treeIn = {};
 let title = '';
 let description = '';
 let showData = false;
@@ -21,12 +22,23 @@ export const parseDirective = function (statement, context, type) {
   mermaidAPI.parseDirective(this, statement, context, type);
 };
 
+const addTreeBranch = function(section) {
+  
+}
+
+const addChildSection = function(parentId, id, value) {
+  parentId = parentId.trim()
+  id = id.trim()
+  value = value.trim()
+  log.warn(parentId, id, value)
+  sections = {"Rats": 100}
+}
+
 const addSection = function (id, value) {
-  id = common.sanitizeText(id, configApi.getConfig());
-  if (typeof sections[id] === 'undefined') {
-    sections[id] = value;
-    log.debug('Added new section :', id);
-  }
+  id = id.trim()
+  value = value.trim()
+  log.warn(id, value)
+  sections = {"Rats": 100}
 };
 const getSections = () => sections;
 
@@ -57,6 +69,7 @@ const clear = function () {
 export default {
   parseDirective,
   getConfig: () => configApi.getConfig().tree,
+  addChildSection,
   addSection,
   getSections,
   cleanupValue,
