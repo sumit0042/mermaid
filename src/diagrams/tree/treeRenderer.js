@@ -1,7 +1,7 @@
 /** Created by AshishJ on 11-09-2019. */
-import { select, scaleOrdinal, pie as d3pie, arc } from 'd3';
-import pieData from './treeDb';
-import pieParser from './parser/tree';
+import * as d3 from 'd3';
+import treeData from './treeDb';
+import treeParser from './parser/tree';
 import { log } from '../../logger';
 import { configureSvgSize } from '../../utils';
 import * as configApi from '../../config';
@@ -9,8 +9,96 @@ import addSVGAccessibilityFields from '../../accessibility';
 
 let conf = configApi.getConfig();
 
+function Tree(svg, data, 
+  { 
+  path, 
+  id = Array.isArray(data) ? d => d.id : null, 
+  parentId = Array.isArray(data) ? d => d.parentId : null, 
+  children, 
+  tree = d3.tree, 
+  sort, 
+  label=d => d.name, 
+  title, 
+  link, 
+  linkTarget = "_blank", 
+  width = 640, 
+  height, 
+  r = 3, 
+  padding = 1, 
+  fill = "#999", 
+  stroke = "#555",
+  halo = "#fff", 
+  haloWidth = 3, 
+} = {}) {
+  
+  const root = path != null ? d3.stratify().path(path)(data)
+      : id != null || parentId != null ? d3.stratify().id(id).parentId(parentId)(data)
+      : d3.hierarchy(data, children);
+  
+  if (sort != null) root.sort(sort);
+
+  const descendants = root.descendants();
+  const L = label == null ? null : descendants.map(d => label(d.data, d));
+
+  const dx = 10;
+  const dy = width / (root.height + padding);
+  tree().nodeSize([dx, dy])(root);
+  
+  let x0 = Infinity;
+  let x1 = -x0;
+  root.each(d => {
+    if (d.x > x1) x1 = d.x;
+    if (d.x < x0) x0 = d.x;
+  });
+  
+  if (height === undefined) height = x1 - x0 + dx * 2;
+  
+  svg
+      .attr("viewBox", [-dy * padding / 2, x0 - dx, width, height])
+      .attr("width", width)
+      .attr("height", height)
+      .attr("style", "max-width: 100%; height: auto; height: intrinsic;");
+
+  svg.append("g")
+      .attr("fill", "none")
+      .attr('class', 'treeStrokes')
+    .selectAll("path")
+      .data(root.links())
+      .join("path")
+        .attr("d", d3.linkHorizontal()
+            .x(d => d.y)
+            .y(d => d.x));
+
+  const node = svg.append("g")
+    .selectAll("a")
+    .data(root.descendants())
+    .join("a")
+      .attr("xlink:href", link == null ? null : d => link(d.data, d))
+      .attr("target", link == null ? null : linkTarget)
+      .attr("transform", d => `translate(${d.y},${d.x})`);
+
+  node.append("circle")
+      .attr("fill", d => d.children ? stroke : fill)
+      .attr("r", r);
+
+  if (title != null) node.append("title")
+      .text(d => title(d.data, d));
+
+  if (L) node.append("text")
+      .attr("dy", "0.32em")
+      .attr("x", d => d.children ? -6 : 6)
+      .attr("text-anchor", d => d.children ? "end" : "start")
+      .attr("paint-order", "stroke")
+      .attr("stroke", halo)
+      .attr("stroke-width", haloWidth)
+      .attr('class',  'treeDiagram')
+      .text((d, i) => L[i]);
+
+  return svg.node();
+}
+
 /**
- * Draws a Pie Chart with the data given in text.
+ * Draws a Tree with the data given in text.
  *
  * @param text
  * @param id
@@ -20,161 +108,35 @@ const height = 450;
 export const draw = (txt, id) => {
   try {
     conf = configApi.getConfig();
-    const parser = pieParser.parser;
-    parser.yy = pieData;
+    const parser = treeParser.parser;
+    parser.yy = treeData;
     log.debug('Rendering info diagram\n' + txt);
 
     const securityLevel = configApi.getConfig().securityLevel;
     // Handle root and ocument for when rendering in sanbox mode
     let sandboxElement;
     if (securityLevel === 'sandbox') {
-      sandboxElement = select('#i' + id);
+      sandboxElement = d3.select('#i' + id);
     }
     const root =
       securityLevel === 'sandbox'
-        ? select(sandboxElement.nodes()[0].contentDocument.body)
-        : select('body');
+        ? d3.select(sandboxElement.nodes()[0].contentDocument.body)
+        : d3.select('body');
     const doc = securityLevel === 'sandbox' ? sandboxElement.nodes()[0].contentDocument : document;
-
-    // Parse the Pie Chart definition
+    
     parser.yy.clear();
     parser.parse(txt);
+    treeData.buildTree();
     log.debug('Parsed info diagram');
-    const elem = doc.getElementById(id);
-    width = elem.parentElement.offsetWidth;
-
-    if (typeof width === 'undefined') {
-      width = 1200;
-    }
-
-    if (typeof conf.useWidth !== 'undefined') {
-      width = conf.useWidth;
-    }
-    if (typeof conf.pie.useWidth !== 'undefined') {
-      width = conf.pie.useWidth;
-    }
 
     const diagram = root.select('#' + id);
-    configureSvgSize(diagram, height, width, conf.pie.useMaxWidth);
+    
+    var data = treeData.getSections();
+
+    Tree(diagram, data)
 
     addSVGAccessibilityFields(parser.yy, diagram, id);
-    // Set viewBox
-    elem.setAttribute('viewBox', '0 0 ' + width + ' ' + height);
-
-    // Fetch the default direction, use TD if none was found
-    var margin = 40;
-    var legendRectSize = 18;
-    var legendSpacing = 4;
-
-    var radius = Math.min(width, height) / 2 - margin;
-
-    var svg = diagram
-      .append('g')
-      .attr('transform', 'translate(' + width / 2 + ',' + height / 2 + ')');
-
-    var data = pieData.getSections();
-    var sum = 0;
-    Object.keys(data).forEach(function (key) {
-      sum += data[key];
-    });
-
-    const themeVariables = conf.themeVariables;
-    var myGeneratedColors = [
-      themeVariables.pie1,
-      themeVariables.pie2,
-      themeVariables.pie3,
-      themeVariables.pie4,
-      themeVariables.pie5,
-      themeVariables.pie6,
-      themeVariables.pie7,
-      themeVariables.pie8,
-      themeVariables.pie9,
-      themeVariables.pie10,
-      themeVariables.pie11,
-      themeVariables.pie12,
-    ];
-
-    // Set the color scale
-    var color = scaleOrdinal().range(myGeneratedColors);
-
-    // Compute the position of each group on the pie:
-    var pie = d3pie().value(function (d) {
-      return d[1];
-    });
-    var dataReady = pie(Object.entries(data));
-
-    // Shape helper to build arcs:
-    var arcGenerator = arc().innerRadius(0).outerRadius(radius);
-
-    // Build the pie chart: each part of the pie is a path that we build using the arc function.
-    svg
-      .selectAll('mySlices')
-      .data(dataReady)
-      .enter()
-      .append('path')
-      .attr('d', arcGenerator)
-      .attr('fill', function (d) {
-        return color(d.data[0]);
-      })
-      .attr('class', 'pieCircle');
-
-    // Now add the percentage.
-    // Use the centroid method to get the best coordinates.
-    svg
-      .selectAll('mySlices')
-      .data(dataReady)
-      .enter()
-      .append('text')
-      .text(function (d) {
-        return ((d.data[1] / sum) * 100).toFixed(0) + '%';
-      })
-      .attr('transform', function (d) {
-        return 'translate(' + arcGenerator.centroid(d) + ')';
-      })
-      .style('text-anchor', 'middle')
-      .attr('class', 'slice');
-
-    svg
-      .append('text')
-      .text(parser.yy.getDiagramTitle())
-      .attr('x', 0)
-      .attr('y', -(height - 50) / 2)
-      .attr('class', 'pieTitleText');
-
-    // Add the legends/annotations for each section
-    var legend = svg
-      .selectAll('.legend')
-      .data(color.domain())
-      .enter()
-      .append('g')
-      .attr('class', 'legend')
-      .attr('transform', function (d, i) {
-        var height = legendRectSize + legendSpacing;
-        var offset = (height * color.domain().length) / 2;
-        var horz = 12 * legendRectSize;
-        var vert = i * height - offset;
-        return 'translate(' + horz + ',' + vert + ')';
-      });
-
-    legend
-      .append('rect')
-      .attr('width', legendRectSize)
-      .attr('height', legendRectSize)
-      .style('fill', color)
-      .style('stroke', color);
-
-    legend
-      .data(dataReady)
-      .append('text')
-      .attr('x', legendRectSize + legendSpacing)
-      .attr('y', legendRectSize - legendSpacing)
-      .text(function (d) {
-        if (parser.yy.getShowData() || conf.showData || conf.pie.showData) {
-          return d.data[0] + ' [' + d.data[1] + ']';
-        } else {
-          return d.data[0];
-        }
-      });
+        
   } catch (e) {
     log.error('Error while rendering info diagram');
     log.error(e);

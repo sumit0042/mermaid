@@ -196,6 +196,13 @@ class Theme {
     this.pieStrokeWidth = this.pieStrokeWidth || '2px';
     this.pieOpacity = this.pieOpacity || '0.7';
 
+    /* tree-diagram */
+    this.treeStroke = this.treeStroke || '#555';
+    this.treeStrokeOpacity = this.treeStrokeOpacity || '0.4';
+    this.treeStrokeWidth = this.treeStrokeWidth || '1.5';
+    this.treeSectionFontSize = this.treeSectionFontSize || '10px';
+    this.treeSectionFontFamily = this.treeSectionFontFamily || 'sans-serif';
+
     /* requirement-diagram */
     this.requirementBackground = this.requirementBackground || this.primaryColor;
     this.requirementBorderColor = this.requirementBorderColor || this.primaryBorderColor;

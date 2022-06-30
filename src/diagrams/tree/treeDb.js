@@ -11,9 +11,12 @@ import {
   setAccDescription,
   clear as commonClear,
 } from '../../commonDb';
+import { branch } from '../git/gitGraphAst';
 
+let branches = {};
+let parents = {};
 let sections = {};
-let treeIn = {};
+let dataTree = {};
 let title = '';
 let description = '';
 let showData = false;
@@ -22,25 +25,53 @@ export const parseDirective = function (statement, context, type) {
   mermaidAPI.parseDirective(this, statement, context, type);
 };
 
-const addTreeBranch = function(section) {
-  
+const buildTree = function() {
+  log.warn(branches)
+  let shouldMerge = {}
+  while (Object.keys(branches).length > 1){
+    shouldMerge = {}
+    for (const key in branches) {
+      if (Object.hasOwnProperty.call(branches, key)) {
+        log.warn(key)
+        const children = branches[key];
+        log.warn(children)
+        if (!(children.reduce((val, child)=>{
+          return val | branches.hasOwnProperty(child.id)
+        }, false))){
+          const index = branches[parents[key]].findIndex(child => child.id==key)
+          branches[parents[key]][index].children = branches[key]
+          delete branches[key]
+        }
+      }
+    }
+  }
+  dataTree.children = branches[dataTree.id]
 }
 
-const addChildSection = function(parentId, id, value) {
+const addChildSection = function(parentId, id, name) {
   parentId = parentId.trim()
   id = id.trim()
-  value = value.trim()
-  log.warn(parentId, id, value)
-  sections = {"Rats": 100}
+  name = name.trim()
+  parents[id] = parentId
+  if (typeof branches[parentId] === 'undefined') {
+    branches[parentId] = [{id:id, name:name}]
+  }
+  else {
+    log.warn(branches[parentId])
+    branches[parentId] = [...branches[parentId], {id:id, name:name}]
+  }
+  log.warn(parentId, id, name)
 }
 
 const addSection = function (id, value) {
   id = id.trim()
   value = value.trim()
+  dataTree = {id:id, name:value}
   log.warn(id, value)
   sections = {"Rats": 100}
 };
-const getSections = () => sections;
+
+const getSections = () => dataTree;
 
 const setShowData = function (toggle) {
   showData = toggle;
@@ -69,6 +100,7 @@ const clear = function () {
 export default {
   parseDirective,
   getConfig: () => configApi.getConfig().tree,
+  buildTree,
   addChildSection,
   addSection,
   getSections,
