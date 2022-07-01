@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>Mermaid Quick Test Page</title>
+	<link rel="icon" type="image/png" href="data:image/png;base64,iVBORw0KGgo=">
+	<style>
+		div.mermaid {
+			/* font-family: 'trebuchet ms', verdana, arial; */
+			font-family: 'Courier New', Courier, monospace ;
+		};
+	</style>
+</head>
+
+<body>
+
+	<div class="mermaid">
+		tree title Earth as tree
+		U : [       "Universe","ss","ss"   ,"ss",  "ss" ]
+		U -- > SS : ["Sun","ss"]
+		U -- > SO : ["Other Star","ss"]
+		SS -- > M : ["Mars","ss"]
+		SS -- > E : ["Earth","ss"]
+		E -- > WO : ["Water","ss"]
+		E -- > L : ["Land","ss"]
+		WO -- > WO1 : ["Pacific","ss"]
+		WO -- > WO2 : ["Indian","ss"]
+		WO -- > WO3 : ["Atlantic","ss"]
+		WO -- > WO4 : ["Arctic","ss"]
+		WO -- > WO5 : ["Antarctic","ss"]
+		WO -- > WO12 : ["Indian","ss"]
+		WO -- > WO13 : ["Atlantic","ss"]
+		WO -- > WO14 : ["Arctic","ss"]
+		WO -- > WO15 : ["Antarctic","ss"]
+		WO -- > WO22 : ["Indian","ss"]
+		WO -- > WO23 : ["Atlantic","ss"]
+		WO -- > WO24 : ["Arctic","ss"]
+		WO -- > WO25 : ["Antarctic","ss"]
+		WO -- > WO32 : ["Indian","ss"]
+		WO -- > WO33 : ["Atlantic","ss"]
+		WO -- > WO34 : ["Arctic","ss"]
+		WO -- > WO35 : ["Antarctic","ss"]
+		L -- > LC71 : ["Asia","ss"]
+		L -- > LC72 : ["Africa","ss"]
+		L -- > LC73 : ["Europe","ss"]
+		L -- > LC74 : ["America","ss"]
+		L -- > LC61 : ["Asia","ss"]
+		L -- > LC62 : ["Africa","ss"]
+		L -- > LC63 : ["Europe","ss"]
+		L -- > LC64 : ["America","ss"]
+		L -- > LC51 : ["Asia","ss"]
+		L -- > LC52 : ["Africa","ss"]
+		L -- > LC53 : ["Europe","ss"]
+		L -- > LC54 : ["America","ss"]
+		L -- > LC41 : ["Asia","ss"]
+		L -- > LC42 : ["Africa","ss"]
+		L -- > LC43 : ["Europe","ss"]
+		L -- > LC44 : ["America","ss"]
+		L -- > LC31 : ["Asia","ss"]
+		L -- > LC32 : ["Africa","ss"]
+		L -- > LC33 : ["Europe","ss"]
+		L -- > LC34 : ["America","ss"]
+		L -- > LC21 : ["Asia","ss"]
+		L -- > LC22 : ["Africa","ss"]
+		L -- > LC23 : ["Europe","ss"]
+		L -- > LC24 : ["America","ss"]
+		L -- > LC11 : ["Asia","ss"]
+		L -- > LC12 : ["Africa","ss"]
+		L -- > LC13 : ["Europe","ss"]
+		L -- > LC14 : ["America","ss"]
+	</div>
+
+	<script src="./mermaid.min.js"></script>
+	<script>
+		mermaid.initialize({
+		  theme: 'default',
+		  themeCSS:'.treeText{font-size:20px;font-family:sans-serif;} .treeStrokes{stroke:#955;stroke-opacity:0.4;stroke-width:1.5;}',
+		//   themeCSS: '.treeStrokes{stroke:#955;stroke-opacity:0.4;stroke-width:1.5;}',
+		  logLevel: 3,
+		  tree: {
+			dx:40, useMaxWidth:true, useWidth:1560
+		  }
+		});
+	</script>
+
+</body>
+
+</html>

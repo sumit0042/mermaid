@@ -901,10 +901,20 @@ const d3Attrs = function (d3Elem, attrs) {
  */
 export const calculateSvgSizeAttrs = function (height, width, useMaxWidth) {
   let attrs = new Map();
+  let heightStyle = []
+  if (typeof height === 'object') {
+    heightStyle = height['style']
+    height = height['height']
+  }
   attrs.set('height', height);
   if (useMaxWidth) {
     attrs.set('width', '100%');
-    attrs.set('style', `max-width: ${width}px;`);
+    if (heightStyle.length==0) {
+      attrs.set('style', `max-width: ${width}px;`);
+    }
+    else {
+      attrs.set('style', `max-width: ${width}px; height:${heightStyle[0]}; height:${heightStyle[1]}`);
+    }
   } else {
     attrs.set('width', width);
   }

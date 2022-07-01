@@ -61,10 +61,10 @@ function Tree(svg, data, dX,
   
   if (height === undefined) height = x1 - x0 + dx * 2;
 
-  configureSvgSize(svg, height, width, conf.useMaxWidth);
+  configureSvgSize(svg, {height:height, style:['auto','intrinsic']}, width, conf.useMaxWidth);
   
   svg
-      .attr("viewBox", [-dy * padding / 2, x0 - dx, width, height])
+    .attr("viewBox", [-dy * padding / 2, x0 - dx, width, height])
 
   svg.append("g")
       .attr("fill", "none")

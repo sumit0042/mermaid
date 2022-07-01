@@ -26,15 +26,12 @@ export const parseDirective = function (statement, context, type) {
 };
 
 const buildTree = function() {
-  log.warn(branches)
   let shouldMerge = {}
   while (Object.keys(branches).length > 1){
     shouldMerge = {}
     for (const key in branches) {
       if (Object.hasOwnProperty.call(branches, key)) {
-        log.warn(key)
         const children = branches[key];
-        log.warn(children)
         if (!(children.reduce((val, child)=>{
           return val | branches.hasOwnProperty(child.id)
         }, false))){
@@ -57,17 +54,14 @@ const addChildSection = function(parentId, id, name) {
     branches[parentId] = [{id:id, name:name}]
   }
   else {
-    log.warn(branches[parentId])
     branches[parentId] = [...branches[parentId], {id:id, name:name}]
   }
-  log.warn(parentId, id, name)
 }
 
 const addSection = function (id, value) {
   id = id.trim()
   value = value.trim()
   dataTree = {id:id, name:value}
-  log.warn(id, value)
   sections = {"Rats": 100}
 };
 
