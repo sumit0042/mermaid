@@ -43,7 +43,8 @@ accDescr\s*"{"\s*                                { this.begin("acc_descr_multili
 "showData"                                                      return 'showData';
 \w+\s*                                                          { return "id"}
 "--"\s">"                                                       return 'ARROW';
-":"                                                             return 'SEMICOLON'
+":"                                                             return 'SEMICOLON';
+","                                                             return 'COMMA'
 <<EOF>>                                                         return 'EOF';
 
 /lex
@@ -70,14 +71,26 @@ line
 
 statement
   :
-	| id SEMICOLON txt          { yy.addSection($1, $3); }
-	| id ARROW id SEMICOLON txt          { yy.addChildSection($1, $3, $5); }
+	| id SEMICOLON Array                   { yy.addSection($1, $3); }
+	| id ARROW id SEMICOLON Array          { yy.addChildSection($1, $3, $5); }
 	| title title_value  { $$=$2.trim();yy.setDiagramTitle($$); }
   | acc_title acc_title_value  { $$=$2.trim();yy.setAccTitle($$); }
   | acc_descr acc_descr_value  { $$=$2.trim();yy.setAccDescription($$); }
   | acc_descr_multiline_value { $$=$1.trim();yy.setAccDescription($$); }  | section {yy.addSection($1.substr(8));$$=$1.substr(8);}
 	| directive
 	;
+
+Array
+  :  Element 
+     {{ $$ = $1; }}
+  ;
+
+Element
+  : Element COMMA txt
+     {{ $$ = $1; }}
+  | txt
+     {{ $$ = $1; }}
+  ;
 
 directive
   : openDirective typeDirective closeDirective
