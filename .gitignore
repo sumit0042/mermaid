@@ -5,6 +5,8 @@ coverage/
 .idea/
 
 dist
+dist-dev
+dist-prod
 
 yarn-error.log
 .npmrc
