@@ -98,7 +98,7 @@ function Tree(svg, data, dX,
       .attr("paint-order", "stroke")
       .attr("stroke", halo)
       .attr("stroke-width", haloWidth)
-      .attr('class',  'treeDiagram')
+      .attr('class',  'treeText')
       .text((d, i) => L[i]);
 
   return svg.node();

@@ -1,6 +1,6 @@
 const getStyles = (options) =>
   `
-  .treeDiagram{
+  .treeText{
     font-size:${options.treeSectionFontSize};
     font-family:${options.treeSectionFontFamily};
   }
