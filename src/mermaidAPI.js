@@ -718,7 +718,7 @@ function updateRendererConfigs(conf) {
   stateRendererV2.setConf(conf.state);
   infoRenderer.setConf(conf.class);
   // pieRenderer.setConf(conf.class);
-  // treeRenderer.setConf(conf.class);
+  treeRenderer.setConf(conf.tree);
   erRenderer.setConf(conf.er);
   journeyRenderer.setConf(conf.journey);
   requirementRenderer.setConf(conf.requirement);

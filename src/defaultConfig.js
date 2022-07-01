@@ -1035,6 +1035,9 @@ const config = {
      * Default value: true
      */
     useMaxWidth: true,
+
+    // increases spacing between nodes of the tree
+    dx: 10
   },
 
 

@@ -9,7 +9,15 @@ import addSVGAccessibilityFields from '../../accessibility';
 
 let conf = configApi.getConfig();
 
-function Tree(svg, data, 
+export const setConf = function (cnf) {
+  const keys = Object.keys(cnf);
+
+  keys.forEach(function (key) {
+    conf[key] = cnf[key];
+  });
+};
+
+function Tree(svg, data, dX,
   { 
   path, 
   id = Array.isArray(data) ? d => d.id : null, 
@@ -40,7 +48,7 @@ function Tree(svg, data,
   const descendants = root.descendants();
   const L = label == null ? null : descendants.map(d => label(d.data, d));
 
-  const dx = 10;
+  const dx = dX;
   const dy = width / (root.height + padding);
   tree().nodeSize([dx, dy])(root);
   
@@ -107,7 +115,7 @@ let width;
 const height = 450;
 export const draw = (txt, id) => {
   try {
-    conf = configApi.getConfig();
+    conf = configApi.getConfig().tree; //This overrides config by setConf. It picks it from memory, the updated config as in initialize. config from mermaid.initialize is picked even if we comment or uncomment this
     const parser = treeParser.parser;
     parser.yy = treeData;
     log.debug('Rendering info diagram\n' + txt);
@@ -133,7 +141,7 @@ export const draw = (txt, id) => {
     
     var data = treeData.getSections();
 
-    Tree(diagram, data)
+    Tree(diagram, data, conf.dx)
 
     addSVGAccessibilityFields(parser.yy, diagram, id);
         
@@ -145,4 +153,5 @@ export const draw = (txt, id) => {
 
 export default {
   draw,
+  setConf,
 };
