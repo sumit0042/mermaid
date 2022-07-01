@@ -29,7 +29,7 @@ function Tree(svg, data, dX,
   title, 
   link, 
   linkTarget = "_blank", 
-  width = 640, 
+  width = conf.useWidth, 
   height, 
   r = 3, 
   padding = 1, 
@@ -60,12 +60,11 @@ function Tree(svg, data, dX,
   });
   
   if (height === undefined) height = x1 - x0 + dx * 2;
+
+  configureSvgSize(svg, height, width, conf.useMaxWidth);
   
   svg
       .attr("viewBox", [-dy * padding / 2, x0 - dx, width, height])
-      .attr("width", width)
-      .attr("height", height)
-      .attr("style", "max-width: 100%; height: auto; height: intrinsic;");
 
   svg.append("g")
       .attr("fill", "none")

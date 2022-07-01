@@ -1020,7 +1020,7 @@ const config = {
 
   /** The object containing configurations specific for tree diagrams */
   tree: {
-    useWidth: undefined,
+    useWidth: 640,
 
     /**
      * | Parameter   | Description | Type    | Required | Values      |
@@ -1037,7 +1037,7 @@ const config = {
     useMaxWidth: true,
 
     // increases spacing between nodes of the tree
-    dx: 10
+    dx: 10,
   },
 
 
