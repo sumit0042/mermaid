@@ -45,6 +45,8 @@ accDescr\s*"{"\s*                                { this.begin("acc_descr_multili
 "--"\s">"                                                       return 'ARROW';
 ":"                                                             return 'SEMICOLON';
 ","                                                             return 'COMMA'
+"["                                                             return 'OPEN_ARR'
+"]"                                                             return 'CLOSE_ARR'
 <<EOF>>                                                         return 'EOF';
 
 /lex
@@ -81,8 +83,8 @@ statement
 	;
 
 Array
-  :  Element 
-     {{ $$ = $1; }}
+  :  OPEN_ARR Element CLOSE_ARR 
+     {{ $$ = $2; }}
   ;
 
 Element
