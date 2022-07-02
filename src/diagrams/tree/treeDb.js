@@ -15,7 +15,6 @@ import { branch } from '../git/gitGraphAst';
 
 let branches = {};
 let parents = {};
-let sections = {};
 let dataTree = {};
 let title = '';
 let description = '';
@@ -62,7 +61,6 @@ const addSection = function (id, value) {
   id = id.trim()
   value = value.trim()
   dataTree = {id:id, name:value}
-  sections = {"Rats": 100}
 };
 
 const getSections = () => dataTree;
@@ -85,7 +83,9 @@ const cleanupValue = function (value) {
 };
 
 const clear = function () {
-  sections = {};
+  branches = {};
+  parents = {};
+  dataTree = {};
   title = '';
   showData = false;
   commonClear();
